@@ -7,8 +7,15 @@ import Resume from "../Resume/Resume";
 
 import styles from "./Body.module.css";
 
-import { Document, Packer, Paragraph, TextRun } from "docx";
-import { saveAs } from 'file-saver';
+import { saveAs } from "file-saver";
+import { Packer } from "docx";
+import {
+  experiences,
+  education,
+  skills,
+  achievements,
+} from "../../helpers/cv-data";
+import { DocumentCreator } from "../../helpers/cv-generator";
 
 const Body = () => {
   const colors = ["#239ce2", "#48bb78", "#0bc5ea", "#a0aec0", "#ed8936"];
@@ -62,36 +69,28 @@ const Body = () => {
     },
   });
 
-  // Function to create document
-  // function createResumeDoc(data) {
-  //   const doc = new Document({
-  //     // Ensure you have the necessary properties defined
-  //     creator: "Creator's Name",
-  //     description: "Your Description Here",
-  //   });
+  const getRef = () => {
+    console.log(resumeRef.current);
+  };
 
-  //   // Add some content in the document
-  //   const title = new Paragraph(data.title).title();
-  //   const description = new Paragraph(data.description);
+  const generate = () => {
+    console.log(experiences, education, skills, achievements);
+    const documentCreator = new DocumentCreator();
+    // const doc = documentCreator.create(
+    //   experiences,
+    //   education,
+    //   skills,
+    //   achievements
+    // );
+    const doc = documentCreator.createDocument();
 
-  //   // Add content to the document
-  //   doc.addSection({
-  //     children: [title, description],
-  //   });
+    Packer.toBlob(doc).then((blob) => {
+      console.log(blob);
+      saveAs(blob, "example.docx");
+      console.log("Document created successfully");
+    });
+  };
 
-  //   // Used to export the file into a .docx file
-  //   Packer.toBlob(doc).then((blob) => {
-  //     // saveAs from FileSaver will save the file
-  //     saveAs(blob, "resume.docx");
-  //   });
-  // }
-
-  // // Example data, replace with your state's data
-  // const resumeData = {
-  //   title: "John Doe's Resume",
-  //   description: "This is the description",
-  //   // Add other resume data here
-  // };
 
   return (
     <div className={styles.container}>
@@ -109,9 +108,11 @@ const Body = () => {
             />
           ))}
         </div>
-        {/* <button onClick={createResumeDoc(resumeData)}>
-          Download Docx <ArrowDown />
-        </button> */}
+
+        <button onClick={generate}>
+          Get Ref <ArrowDown />
+        </button>
+
         <ReactToPrint
           trigger={() => {
             return (
