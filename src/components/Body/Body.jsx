@@ -130,7 +130,7 @@ const Body = () => {
     //   skills,
     //   achievements
     // );
-    const doc = documentCreator.createDocument(resumeInformation);
+    const doc = documentCreator.createDocument();
 
     Packer.toBlob(doc).then((blob) => {
       console.log(blob);
