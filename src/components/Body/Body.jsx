@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactToPrint from "react-to-print";
 import { ArrowDown } from "react-feather";
 
@@ -16,9 +16,12 @@ import {
   achievements,
 } from "../../helpers/cv-data";
 import { DocumentCreator } from "../../helpers/cv-generator";
+import axios from "axios";
 
 const Body = () => {
   const colors = ["#239ce2", "#48bb78", "#0bc5ea", "#a0aec0", "#ed8936"];
+
+  const [loading, setLoading] = useState(true);
   const sections = {
     basicInfo: "Basic Info",
     workExp: "Work Experience",
@@ -28,10 +31,7 @@ const Body = () => {
     summary: "Summary",
     other: "Other",
   };
-  const resumeRef = useRef();
-
-  const [activeColor, setActiveColor] = useState(colors[0]);
-  const [resumeInformation, setResumeInformation] = useState({
+  const intialResumeInformation = {
     [sections.basicInfo]: {
       id: sections.basicInfo,
       sectionTitle: sections.basicInfo,
@@ -67,11 +67,59 @@ const Body = () => {
       sectionTitle: sections.other,
       detail: "",
     },
-  });
-
-  const getRef = () => {
-    console.log(resumeRef.current);
   };
+  const resumeRef = useRef();
+
+  const [activeColor, setActiveColor] = useState(colors[0]);
+  const [resumeInformation, setResumeInformation] = useState(null);
+
+  useEffect(() => {
+    console.log("Inside useeffect on resumeInformation change");
+
+    if (!localStorage.getItem("resumeId")) {
+      async function createResume() {
+        axios
+          .post("http://localhost:5454/api/resume-data", {
+            resume_data: intialResumeInformation,
+          })
+          .then(
+            (response) => {
+              let result = response.data;
+              console.log("axios => ", result);
+
+              localStorage.setItem("resumeId", result?.data?._id);
+              setResumeInformation(intialResumeInformation);
+            },
+            (error) => {
+              console.log(error);
+            }
+          );
+      }
+
+      createResume();
+      setLoading(true);
+    } else {
+      async function fetchResumeData() {
+        const resumeId = localStorage.getItem("resumeId");
+        axios.get(`http://localhost:5454/api/resume-data/${resumeId}`).then(
+          (response) => {
+            let result = response.data;
+            console.log("axios => ", result);
+
+            console.log("resume data : ", result.data.resume_data);
+
+            setResumeInformation(result?.data?.resume_data);
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+      }
+
+      fetchResumeData();
+      setLoading(true);
+    }
+  }, []);
 
   const generate = () => {
     console.log(experiences, education, skills, achievements);
@@ -82,7 +130,7 @@ const Body = () => {
     //   skills,
     //   achievements
     // );
-    const doc = documentCreator.createDocument();
+    const doc = documentCreator.createDocument(resumeInformation);
 
     Packer.toBlob(doc).then((blob) => {
       console.log(blob);
@@ -90,7 +138,6 @@ const Body = () => {
       console.log("Document created successfully");
     });
   };
-
 
   return (
     <div className={styles.container}>
@@ -110,7 +157,7 @@ const Body = () => {
         </div>
 
         <button onClick={generate}>
-          Get Ref <ArrowDown />
+          Download Docx <ArrowDown />
         </button>
 
         <ReactToPrint
@@ -124,19 +171,21 @@ const Body = () => {
           content={() => resumeRef.current}
         />
       </div>
-      <div className={styles.main}>
-        <Editor
-          sections={sections}
-          information={resumeInformation}
-          setInformation={setResumeInformation}
-        />
-        <Resume
-          ref={resumeRef}
-          sections={sections}
-          information={resumeInformation}
-          activeColor={activeColor}
-        />
-      </div>
+      {loading && resumeInformation && (
+        <div className={styles.main}>
+          <Editor
+            sections={sections}
+            information={resumeInformation}
+            setInformation={setResumeInformation}
+          />
+          <Resume
+            ref={resumeRef}
+            sections={sections}
+            information={resumeInformation}
+            activeColor={activeColor}
+          />
+        </div>
+      )}
     </div>
   );
 };

@@ -20,12 +20,12 @@ const jsonData = {
             "id": "Basic Info",
             "sectionTitle": "Basic Info",
             "detail": {
-                "name": "Chaitanya",
-                "title": "Kanzarkar",
+                "name": "Furheen Mondal",
+                "title": "Software Dev",
                 "linkedin": "https://github.com/",
                 "github": "https://github.com/",
-                "email": "c2k2c2k2@gmail.com",
-                "phone": "9405456530"
+                "email": "johndoe@gmail.com",
+                "phone": "9999999999"
             }
         },
         "Work Experience": {
@@ -37,12 +37,12 @@ const jsonData = {
                     "title": "Backend Developer",
                     "startDate": "2023-12-20",
                     "endDate": "2023-12-26",
-                    "companyName": "CXR Agency",
-                    "location": "Amravati",
+                    "companyName": "XYZ Company",
+                    "location": "Kolkata",
                     "points": [
                         "Nodejs",
-                        "Adonisjs",
-                        "Nextjs"
+                        "Mongodb",
+                        "React"
                     ]
                 }
             ]
@@ -70,14 +70,14 @@ const jsonData = {
             "sectionTitle": "Education",
             "details": [
                 {
-                    "title": "MCA",
-                    "college": "Sant Gadge Baba Amravati University",
+                    "title": "MTech",
+                    "college": "XYZ University",
                     "startDate": "2023-12-14",
                     "endDate": "2023-12-19"
                 },
                 {
-                    "title": "BSc",
-                    "college": "VMV College, Amravati",
+                    "title": "BTech",
+                    "college": "XYZ College, Kolkata",
                     "startDate": "2023-12-07",
                     "endDate": "2023-12-11"
                 }
@@ -87,10 +87,9 @@ const jsonData = {
             "id": "Achievements",
             "sectionTitle": "Achievements",
             "points": [
-                "Magician",
-                "Tabla Player",
-                "National Level Judo Championship",
-                "Rotary Youth Exchange 2012-13 France"
+                "Cook",
+                "Wanderer",
+                "National Level Singer"
             ]
         },
         "Summary": {

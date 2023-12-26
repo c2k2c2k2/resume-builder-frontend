@@ -4,6 +4,7 @@ import { X } from "react-feather";
 import InputControl from "../InputControl/InputControl";
 
 import styles from "./Editor.module.css";
+import axios from "axios";
 const Editor = (props) => {
   const sections = props.sections;
   const information = props.information;
@@ -354,6 +355,25 @@ const Editor = (props) => {
     }
   };
 
+  const updateDB = async (data) => {
+    const resumeId = localStorage.getItem("resumeId");
+    axios
+      .put(`http://localhost:5454/api/resume-data/${resumeId}`, {
+        resume_data: data,
+      })
+      .then(
+        (response) => {
+          let result = response.data;
+          console.log("axios => ", result);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+
+    console.log("active info : ", information);
+  };
+
   const handleSubmission = () => {
     switch (sections[activeSectionKey]) {
       case sections.basicInfo: {
@@ -374,6 +394,8 @@ const Editor = (props) => {
             sectionTitle,
           },
         }));
+        updateDB(information);
+        console.log("after save: ", information);
         break;
       }
       case sections.workExp: {

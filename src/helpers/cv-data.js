@@ -114,3 +114,94 @@ export const experiences = [
       name: "Oracle Certified Expert",
     },
   ];
+
+
+  export const resumeData = {
+    "Basic Info": {
+        "id": "Basic Info",
+        "sectionTitle": "Basic Info",
+        "detail": {
+            "name": "Chaitanya",
+            "title": "Kanzarkar",
+            "linkedin": "https://github.com/",
+            "github": "https://github.com/",
+            "email": "c2k2c2k2@gmail.com",
+            "phone": "9405456530"
+        }
+    },
+    "Work Experience": {
+        "id": "Work Experience",
+        "sectionTitle": "Work Experience",
+        "details": [
+            {
+                "certificationLink": "https://github.com/",
+                "title": "Backend Developer",
+                "startDate": "2023-12-20",
+                "endDate": "2023-12-26",
+                "companyName": "CXR Agency",
+                "location": "Amravati",
+                "points": [
+                    "Nodejs",
+                    "Adonisjs",
+                    "Nextjs"
+                ]
+            }
+        ]
+    },
+    "Projects": {
+        "id": "Projects",
+        "sectionTitle": "Projects",
+        "details": [
+            {
+                "link": "https://github.com/",
+                "title": "Module Creator",
+                "overview": "Dynamic Forms Building",
+                "github": "https://github.com/",
+                "points": [
+                    "Reactjs Frontend",
+                    "Nodejs Backend",
+                    "MongoDb client",
+                    "Fullstack development"
+                ]
+            }
+        ]
+    },
+    "Education": {
+        "id": "Education",
+        "sectionTitle": "Education",
+        "details": [
+            {
+                "title": "MCA",
+                "college": "Sant Gadge Baba Amravati University",
+                "startDate": "2023-12-14",
+                "endDate": "2023-12-19"
+            },
+            {
+                "title": "BSc",
+                "college": "VMV College, Amravati",
+                "startDate": "2023-12-07",
+                "endDate": "2023-12-11"
+            }
+        ]
+    },
+    "Achievements": {
+        "id": "Achievements",
+        "sectionTitle": "Achievements",
+        "points": [
+            "Magician",
+            "Tabla Player",
+            "National Level Judo Championship",
+            "Rotary Youth Exchange 2012-13 France"
+        ]
+    },
+    "Summary": {
+        "id": "Summary",
+        "sectionTitle": "Summary",
+        "detail": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    },
+    "Other": {
+        "id": "Other",
+        "sectionTitle": "Other",
+        "detail": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    }
+}
