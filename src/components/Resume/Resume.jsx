@@ -13,13 +13,11 @@ import styles from "./Resume.module.css";
 
 const Resume = forwardRef((props, ref) => {
   const information = props.information;
-  console.log("information : ",information);
+  console.log("information : ", information);
   const sections = props.sections;
   const containerRef = useRef();
 
-  const [columns, setColumns] = useState([[], []]);
-  const [source, setSource] = useState("");
-  const [target, seTarget] = useState("");
+  const [columns, setColumns] = useState([[]]);
 
   const info = {
     workExp: information[sections.workExp],
@@ -42,9 +40,6 @@ const Resume = forwardRef((props, ref) => {
     [sections.workExp]: (
       <div
         key={"workexp"}
-        draggable
-        onDragOver={() => seTarget(info.workExp?.id)}
-        onDragEnd={() => setSource(info.workExp?.id)}
         className={`${styles.section} ${
           info.workExp?.sectionTitle ? "" : styles.hidden
         }`}
@@ -105,9 +100,6 @@ const Resume = forwardRef((props, ref) => {
     [sections.project]: (
       <div
         key={"project"}
-        draggable
-        onDragOver={() => seTarget(info.project?.id)}
-        onDragEnd={() => setSource(info.project?.id)}
         className={`${styles.section} ${
           info.project?.sectionTitle ? "" : styles.hidden
         }`}
@@ -161,9 +153,6 @@ const Resume = forwardRef((props, ref) => {
     [sections.education]: (
       <div
         key={"education"}
-        draggable
-        onDragOver={() => seTarget(info.education?.id)}
-        onDragEnd={() => setSource(info.education?.id)}
         className={`${styles.section} ${
           info.education?.sectionTitle ? "" : styles.hidden
         }`}
@@ -200,9 +189,6 @@ const Resume = forwardRef((props, ref) => {
     [sections.achievement]: (
       <div
         key={"achievement"}
-        draggable
-        onDragOver={() => seTarget(info.achievement?.id)}
-        onDragEnd={() => setSource(info.achievement?.id)}
         className={`${styles.section} ${
           info.achievement?.sectionTitle ? "" : styles.hidden
         }`}
@@ -228,9 +214,6 @@ const Resume = forwardRef((props, ref) => {
     [sections.summary]: (
       <div
         key={"summary"}
-        draggable
-        onDragOver={() => seTarget(info.summary?.id)}
-        onDragEnd={() => setSource(info.summary?.id)}
         className={`${styles.section} ${
           info.summary?.sectionTitle ? "" : styles.hidden
         }`}
@@ -244,9 +227,6 @@ const Resume = forwardRef((props, ref) => {
     [sections.other]: (
       <div
         key={"other"}
-        draggable
-        onDragOver={() => seTarget(info.other?.id)}
-        onDragEnd={() => setSource(info.other?.id)}
         className={`${styles.section} ${
           info.other?.sectionTitle ? "" : styles.hidden
         }`}
@@ -259,43 +239,18 @@ const Resume = forwardRef((props, ref) => {
     ),
   };
 
-  const swapSourceTarget = (source, target) => {
-    if (!source || !target) return;
-    const tempColumns = [[...columns[0]], [...columns[1]]];
-
-    let sourceRowIndex = tempColumns[0].findIndex((item) => item === source);
-    let sourceColumnIndex = 0;
-    if (sourceRowIndex < 0) {
-      sourceColumnIndex = 1;
-      sourceRowIndex = tempColumns[1].findIndex((item) => item === source);
-    }
-
-    let targetRowIndex = tempColumns[0].findIndex((item) => item === target);
-    let targetColumnIndex = 0;
-    if (targetRowIndex < 0) {
-      targetColumnIndex = 1;
-      targetRowIndex = tempColumns[1].findIndex((item) => item === target);
-    }
-
-    const tempSource = tempColumns[sourceColumnIndex][sourceRowIndex];
-    tempColumns[sourceColumnIndex][sourceRowIndex] =
-      tempColumns[targetColumnIndex][targetRowIndex];
-
-    tempColumns[targetColumnIndex][targetRowIndex] = tempSource;
-
-    setColumns(tempColumns);
-  };
-
   useEffect(() => {
     setColumns([
-      [sections.project, sections.education, sections.summary],
-      [sections.workExp, sections.achievement, sections.other],
+      [
+        sections.workExp,
+        sections.education,
+        sections.project,
+        sections.achievement,
+        sections.summary,
+        sections.other,
+      ],
     ]);
   }, []);
-
-  useEffect(() => {
-    swapSourceTarget(source, target);
-  }, [source]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -346,9 +301,6 @@ const Resume = forwardRef((props, ref) => {
         <div className={styles.main}>
           <div className={styles.col1}>
             {columns[0].map((item) => sectionDiv[item])}
-          </div>
-          <div className={styles.col2}>
-            {columns[1].map((item) => sectionDiv[item])}
           </div>
         </div>
       </div>

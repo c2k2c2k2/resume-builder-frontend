@@ -5,6 +5,7 @@ import InputControl from "../InputControl/InputControl";
 
 import styles from "./Editor.module.css";
 import axios from "axios";
+import updateDB from "../../helpers/helpers";
 const Editor = (props) => {
   const sections = props.sections;
   const information = props.information;
@@ -355,26 +356,44 @@ const Editor = (props) => {
     }
   };
 
-  const updateDB = async (data) => {
-    const resumeId = localStorage.getItem("resumeId");
-    axios
-      .put(`http://localhost:5454/api/resume-data/${resumeId}`, {
-        resume_data: data,
-      })
-      .then(
-        (response) => {
-          let result = response.data;
-          console.log("axios => ", result);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
+  // const updateDB = async (data) => {
+  //   const resumeId = localStorage.getItem("resumeId");
+  //   if (resumeId) {
+  //     await axios
+  //       .put(`http://localhost:5454/api/resume-data/${resumeId}`, {
+  //         resume_data: data,
+  //       })
+  //       .then(
+  //         (response) => {
+  //           let result = response.data;
+  //           console.log("axios => ", result);
+  //         },
+  //         (error) => {
+  //           console.log(error);
+  //         }
+  //       );
+  //   } else {
+  //     await axios
+  //       .post(`http://localhost:5454/api/resume-data`, {
+  //         resume_data: data,
+  //       })
+  //       .then(
+  //         (response) => {
+  //           let result = response.data;
+  //           console.log("axios => ", result);
+  //         },
+  //         (error) => {
+  //           console.log(error);
+  //         }
+  //       );
+  //   }
+  // };
 
-    console.log("active info : ", information);
-  };
+  useEffect(() => {
+    updateDB(information);
+  }, [information]);
 
-  const handleSubmission = () => {
+  const handleSubmission = async () => {
     switch (sections[activeSectionKey]) {
       case sections.basicInfo: {
         const tempDetail = {
@@ -386,7 +405,7 @@ const Editor = (props) => {
           phone: values.phone,
         };
 
-        props.setInformation((prev) => ({
+        const basicInfo = props.setInformation((prev) => ({
           ...prev,
           [sections.basicInfo]: {
             ...prev[sections.basicInfo],
@@ -394,8 +413,6 @@ const Editor = (props) => {
             sectionTitle,
           },
         }));
-        updateDB(information);
-        console.log("after save: ", information);
         break;
       }
       case sections.workExp: {
@@ -419,6 +436,7 @@ const Editor = (props) => {
             sectionTitle,
           },
         }));
+
         break;
       }
       case sections.project: {
@@ -440,6 +458,7 @@ const Editor = (props) => {
             sectionTitle,
           },
         }));
+
         break;
       }
       case sections.education: {
@@ -460,6 +479,7 @@ const Editor = (props) => {
             sectionTitle,
           },
         }));
+
         break;
       }
       case sections.achievement: {
@@ -473,6 +493,7 @@ const Editor = (props) => {
             sectionTitle,
           },
         }));
+
         break;
       }
       case sections.summary: {
@@ -486,6 +507,7 @@ const Editor = (props) => {
             sectionTitle,
           },
         }));
+
         break;
       }
       case sections.other: {
@@ -499,6 +521,7 @@ const Editor = (props) => {
             sectionTitle,
           },
         }));
+
         break;
       }
     }

@@ -7,7 +7,7 @@
     justify-content: space-evenly;
     gap: 30px;
     background-color: rgb(238, 252, 255);
-    min-height: 85vh;
+    min-height: 100vh;
   }
   
   .heading {
@@ -28,4 +28,21 @@
   
   .right img {
     width: 400px;
+  }
+
+  .btn {
+    width: fit-content;
+    padding: 8px 16px;
+    border-radius: 5px;
+    background-color: #239ce2;
+    color: #fff;
+    outline: none;
+    border: none;
+    font-weight: bolder;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    cursor: pointer;
   }
