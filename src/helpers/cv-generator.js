@@ -31,12 +31,11 @@ export class DocumentCreator {
               jsonData['Basic Info'].detail.email
             ),
 
-            // Work Experience Section
-            this.createHeading(jsonData['Work Experience'].sectionTitle),
-            ...jsonData['Work Experience'].details.map((job) => [
-              this.createInstitutionHeader(job.companyName, `${job.startDate} - ${job.endDate}`),
-              this.createRoleText(job.title),
-              ...job.points.map(point => this.createBullet(point))
+            // Education Section
+            this.createHeading(jsonData['Education'].sectionTitle),
+            ...jsonData['Education'].details.map((edu) => [
+              this.createInstitutionHeader(edu.college, `${edu.startDate} - ${edu.endDate}`),
+              this.createRoleText(edu.title)
             ]).flat(),
 
             // Projects Section
@@ -46,11 +45,12 @@ export class DocumentCreator {
               ...project.points.map(point => this.createBullet(point))
             ]).flat(),
 
-            // Education Section
-            this.createHeading(jsonData['Education'].sectionTitle),
-            ...jsonData['Education'].details.map((edu) => [
-              this.createInstitutionHeader(edu.college, `${edu.startDate} - ${edu.endDate}`),
-              this.createRoleText(edu.title)
+            // Work Experience Section
+            this.createHeading(jsonData['Work Experience'].sectionTitle),
+            ...jsonData['Work Experience'].details.map((job) => [
+              this.createInstitutionHeader(job.companyName, `${job.startDate} - ${job.endDate}`),
+              this.createRoleText(job.title),
+              ...job.points.map(point => this.createBullet(point))
             ]).flat(),
 
             // Achievements Section

@@ -17,9 +17,9 @@ const Body = () => {
 
   const sections = {
     basicInfo: "Basic Info",
-    workExp: "Work Experience",
-    project: "Projects",
     education: "Education",
+    project: "Projects",
+    workExp: "Work Experience",
     achievement: "Achievements",
     summary: "Summary",
     other: "Other",

@@ -6,9 +6,22 @@ import InputControl from "../InputControl/InputControl";
 import styles from "./Editor.module.css";
 import axios from "axios";
 import updateDB from "../../helpers/helpers";
+import toast from "react-hot-toast";
+import Joi from "joi";
+import {
+  achievementSchema,
+  basicInfoSchema,
+  educationSchema,
+  otherSchema,
+  projectsSchema,
+  summarySchema,
+  workExperienceSchema,
+} from "../../helpers/validations";
 const Editor = (props) => {
   const sections = props.sections;
   const information = props.information;
+
+  // const [isFinalSubmit, setIsFinalSubmit] = useState(false);
 
   const [activeSectionKey, setActiveSectionKey] = useState(
     Object.keys(sections)[0]
@@ -100,7 +113,9 @@ const Editor = (props) => {
       </div>
 
       <div className={styles.column}>
-        <label>Enter work description</label>
+        <label>
+          Enter work description <span className={styles.mandatory}>*</span>
+        </label>
         <InputControl
           placeholder="Line 1"
           value={values.points ? values.points[0] : ""}
@@ -159,7 +174,9 @@ const Editor = (props) => {
         />
       </div>
       <div className={styles.column}>
-        <label>Enter project description</label>
+        <label>
+          Enter project description <span className={styles.mandatory}>*</span>
+        </label>
         <InputControl
           placeholder="Line 1"
           value={values.points ? values.points[0] : ""}
@@ -286,7 +303,7 @@ const Editor = (props) => {
   const achievementsBody = (
     <div className={styles.detail}>
       <div className={styles.column}>
-        <label>List your achievements</label>
+        <label>List your achievements <span className={styles.mandatory}>*</span></label>
         <InputControl
           placeholder="Line 1"
           value={values.points ? values.points[0] : ""}
@@ -356,44 +373,11 @@ const Editor = (props) => {
     }
   };
 
-  // const updateDB = async (data) => {
-  //   const resumeId = localStorage.getItem("resumeId");
-  //   if (resumeId) {
-  //     await axios
-  //       .put(`http://localhost:5454/api/resume-data/${resumeId}`, {
-  //         resume_data: data,
-  //       })
-  //       .then(
-  //         (response) => {
-  //           let result = response.data;
-  //           console.log("axios => ", result);
-  //         },
-  //         (error) => {
-  //           console.log(error);
-  //         }
-  //       );
-  //   } else {
-  //     await axios
-  //       .post(`http://localhost:5454/api/resume-data`, {
-  //         resume_data: data,
-  //       })
-  //       .then(
-  //         (response) => {
-  //           let result = response.data;
-  //           console.log("axios => ", result);
-  //         },
-  //         (error) => {
-  //           console.log(error);
-  //         }
-  //       );
-  //   }
-  // };
-
   useEffect(() => {
     updateDB(information);
   }, [information]);
 
-  const handleSubmission = async () => {
+  const handleSubmission = async (isFinalSubmit, isNext) => {
     switch (sections[activeSectionKey]) {
       case sections.basicInfo: {
         const tempDetail = {
@@ -405,14 +389,97 @@ const Editor = (props) => {
           phone: values.phone,
         };
 
+        // Validate the data
+        const { error, value } = basicInfoSchema.validate(tempDetail);
+        if (error) {
+          toast.error(`${error.message}`);
+          console.log("error : ", error);
+          break;
+        }
+
         const basicInfo = props.setInformation((prev) => ({
           ...prev,
           [sections.basicInfo]: {
             ...prev[sections.basicInfo],
-            detail: tempDetail,
+            detail: value,
             sectionTitle,
           },
         }));
+
+        if (isNext) {
+          setActiveSectionKey(Object.keys(sections)[1]);
+        } else {
+          toast.success("Data saved successfully.");
+        }
+        toast.success("Basic Info Updated Successfully");
+        break;
+      }
+      case sections.education: {
+        const tempDetail = {
+          title: values.title,
+          college: values.college,
+          startDate: values.startDate,
+          endDate: values.endDate,
+        };
+
+        // Validate the data
+        const { error, value } = educationSchema.validate(tempDetail);
+        if (error) {
+          toast.error(`${error.message}`);
+          console.log("error : ", error);
+          break;
+        }
+
+        const tempDetails = [...information[sections.education]?.details];
+        tempDetails[activeDetailIndex] = value;
+
+        props.setInformation((prev) => ({
+          ...prev,
+          [sections.education]: {
+            ...prev[sections.education],
+            details: tempDetails,
+            sectionTitle,
+          },
+        }));
+        if (isNext) {
+          setActiveSectionKey(Object.keys(sections)[2]);
+        } else {
+          toast.success("Data saved successfully.");
+        }
+        break;
+      }
+      case sections.project: {
+        const tempDetail = {
+          link: values.link,
+          title: values.title,
+          overview: values.overview,
+          github: values.github,
+          points: values.points,
+        };
+
+        const { error, value } = projectsSchema.validate(tempDetail);
+        if (error) {
+          toast.error(`${error.message}`);
+          console.log("error : ", error);
+          break;
+        }
+
+        const tempDetails = [...information[sections.project]?.details];
+        tempDetails[activeDetailIndex] = value;
+
+        props.setInformation((prev) => ({
+          ...prev,
+          [sections.project]: {
+            ...prev[sections.project],
+            details: tempDetails,
+            sectionTitle,
+          },
+        }));
+        if (isNext) {
+          setActiveSectionKey(Object.keys(sections)[3]);
+        } else {
+          toast.success("Data saved successfully.");
+        }
         break;
       }
       case sections.workExp: {
@@ -425,8 +492,16 @@ const Editor = (props) => {
           location: values.location,
           points: values.points,
         };
+
+        const { error, value } = workExperienceSchema.validate(tempDetail);
+        if (error) {
+          toast.error(`${error.message}`);
+          console.log("error : ", error);
+          break;
+        }
+
         const tempDetails = [...information[sections.workExp]?.details];
-        tempDetails[activeDetailIndex] = tempDetail;
+        tempDetails[activeDetailIndex] = value;
 
         props.setInformation((prev) => ({
           ...prev,
@@ -436,54 +511,22 @@ const Editor = (props) => {
             sectionTitle,
           },
         }));
-
-        break;
-      }
-      case sections.project: {
-        const tempDetail = {
-          link: values.link,
-          title: values.title,
-          overview: values.overview,
-          github: values.github,
-          points: values.points,
-        };
-        const tempDetails = [...information[sections.project]?.details];
-        tempDetails[activeDetailIndex] = tempDetail;
-
-        props.setInformation((prev) => ({
-          ...prev,
-          [sections.project]: {
-            ...prev[sections.project],
-            details: tempDetails,
-            sectionTitle,
-          },
-        }));
-
-        break;
-      }
-      case sections.education: {
-        const tempDetail = {
-          title: values.title,
-          college: values.college,
-          startDate: values.startDate,
-          endDate: values.endDate,
-        };
-        const tempDetails = [...information[sections.education]?.details];
-        tempDetails[activeDetailIndex] = tempDetail;
-
-        props.setInformation((prev) => ({
-          ...prev,
-          [sections.education]: {
-            ...prev[sections.education],
-            details: tempDetails,
-            sectionTitle,
-          },
-        }));
-
+        if (isNext) {
+          setActiveSectionKey(Object.keys(sections)[4]);
+        } else {
+          toast.success("Data saved successfully.");
+        }
         break;
       }
       case sections.achievement: {
         const tempPoints = values.points;
+
+        const { error, value } = achievementSchema.validate(tempPoints);
+        if (error) {
+          toast.error(`${error.message}`);
+          console.log("error : ", error);
+          break;
+        }
 
         props.setInformation((prev) => ({
           ...prev,
@@ -493,35 +536,62 @@ const Editor = (props) => {
             sectionTitle,
           },
         }));
-
+        if (isNext) {
+          setActiveSectionKey(Object.keys(sections)[5]);
+        } else {
+          toast.success("Data saved successfully.");
+        }
         break;
       }
       case sections.summary: {
         const tempDetail = values.summary;
 
+        const { error, value } = summarySchema.validate(tempDetail);
+        if (error) {
+          toast.error(`${error.message}`);
+          console.log("error : ", error);
+          break;
+        }
+
         props.setInformation((prev) => ({
           ...prev,
           [sections.summary]: {
             ...prev[sections.summary],
-            detail: tempDetail,
+            detail: value,
             sectionTitle,
           },
         }));
+        if (isNext) {
+          setActiveSectionKey(Object.keys(sections)[6]);
+        } else {
+          toast.success("Data saved successfully.");
+        }
 
         break;
       }
       case sections.other: {
         const tempDetail = values.other;
 
+        const { error, value } = otherSchema.validate(tempDetail);
+        if (error) {
+          toast.error(`${error.message}`);
+          console.log("error : ", error);
+          break;
+        }
+
         props.setInformation((prev) => ({
           ...prev,
           [sections.other]: {
             ...prev[sections.other],
-            detail: tempDetail,
+            detail: value,
             sectionTitle,
           },
         }));
-
+        if (isFinalSubmit) {
+          toast.success("All data submitted successfully.");
+        } else {
+          toast.success("Data saved successfully.");
+        }
         break;
       }
     }
@@ -690,8 +760,42 @@ const Editor = (props) => {
         </div>
 
         {generateBody()}
-
-        <button onClick={handleSubmission}>Save</button>
+        {activeSectionKey === "other" && (
+          <div>
+            <button
+              onClick={() => {
+                handleSubmission(false, false);
+              }}
+            >
+              Save
+            </button>
+            <button
+              onClick={() => {
+                handleSubmission(true, false);
+              }}
+            >
+              Submit
+            </button>
+          </div>
+        )}
+        {activeSectionKey !== "other" && (
+          <div>
+            <button
+              onClick={() => {
+                handleSubmission(false, false);
+              }}
+            >
+              Save
+            </button>
+            <button
+              onClick={() => {
+                handleSubmission(false, true);
+              }}
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

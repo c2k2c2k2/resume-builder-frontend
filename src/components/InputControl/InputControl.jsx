@@ -4,7 +4,11 @@ import styles from "./InputControl.module.css";
 const InputControl = ({ label, ...props }) => {
   return (
     <div className={styles.container}>
-      {label && <label>{label}</label>}
+      {label && (
+        <label>
+          {label} <span className={styles.madatory}>*</span>
+        </label>
+      )}
       <input type="text" {...props} />
     </div>
   );
