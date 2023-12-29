@@ -41,7 +41,7 @@ const Editor = (props) => {
     phone: activeInformation?.detail?.phone || "",
     email: activeInformation?.detail?.email || "",
   });
-  
+
   const handlePointUpdate = (value, index) => {
     const tempValues = { ...values };
     if (!Array.isArray(tempValues.points)) tempValues.points = [];
@@ -609,6 +609,10 @@ const Editor = (props) => {
           toast.success("Data saved successfully.");
         }
         break;
+      }
+
+      default : {
+        // Todo: handle default case
       }
     }
   };

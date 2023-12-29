@@ -47,7 +47,7 @@ export class DocumentCreator {
             ]).flat(),
 
             // Work Experience Section
-            this.handleWorkExpSection(jsonData['Work Experience']),
+            ...this.handleWorkExpSection(jsonData['Work Experience']),
 
             // Achievements Section
             this.createHeading(jsonData['Achievements'].sectionTitle),
@@ -119,13 +119,14 @@ export class DocumentCreator {
 
   handleWorkExpSection(workExp) {
     if (workExp.details.length > 0) {
-
-      return this.createHeading(workExp.sectionTitle),
-        workExp.details.map((job) => [
+      return [
+        this.createHeading(workExp.sectionTitle),
+        ...workExp.details.map((job) => [
           this.createInstitutionHeader(job.companyName, `${job.startDate} - ${job.endDate}`),
           this.createRoleText(job.title),
           ...job.points.map(point => this.createBullet(point))
-        ]).flat()
+        ])
+      ].flat();
     }
   }
 
