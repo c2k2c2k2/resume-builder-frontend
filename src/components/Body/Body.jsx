@@ -16,7 +16,7 @@ const Body = () => {
   const colors = ["#0A79DF"];
 
   const sections = {
-    basicInfo: "Basic Info",
+    basicInfo: "Basic Information",
     education: "Education",
     project: "Projects",
     workExp: "Work Experience",
@@ -32,6 +32,17 @@ const Body = () => {
 
   const [resumeInformation, setResumeInformation] = useState();
 
+  
+  const generate = () => {
+    const documentCreator = new DocumentCreator();
+    const doc = documentCreator.createDocument(resumeInformation);
+    
+    Packer.toBlob(doc).then((blob) => {
+      console.log(blob);
+      saveAs(blob, "résumé.docx");
+      console.log("Document created successfully");
+    });
+  };
   useEffect(() => {
     console.log("Inside useeffect on resumeInformation change");
 
@@ -53,17 +64,6 @@ const Body = () => {
     };
     fetchData();
   }, []);
-
-  const generate = () => {
-    const documentCreator = new DocumentCreator();
-    const doc = documentCreator.createDocument(resumeInformation);
-
-    Packer.toBlob(doc).then((blob) => {
-      console.log(blob);
-      saveAs(blob, "résumé.docx");
-      console.log("Document created successfully");
-    });
-  };
 
   return (
     <div className={styles.container}>

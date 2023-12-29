@@ -41,8 +41,12 @@ const Resume = forwardRef((props, ref) => {
       <div
         key={"workexp"}
         className={`${styles.section} ${
-          info.workExp?.sectionTitle ? "" : styles.hidden
-        }`}
+          info.workExp?.sectionTitle
+            ? ""
+            : styles.hidden
+        }
+        ${info.workExp?.details?.length== 0 ?  styles.hidden : ""}
+        `}
       >
         <div className={styles.sectionTitle}>{info.workExp.sectionTitle}</div>
         <div className={styles.content}>

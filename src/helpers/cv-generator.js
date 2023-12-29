@@ -1,6 +1,7 @@
 import {
   AlignmentType,
   Document,
+  ExternalHyperlink,
   HeadingLevel,
   Paragraph,
   TabStopPosition,
@@ -14,21 +15,21 @@ export class DocumentCreator {
       sections: [
         {
           children: [
-            // Basic Info Section
+            // Basic Information Section
             new Paragraph({
-              text: jsonData['Basic Info'].detail.name,
+              text: jsonData['Basic Information'].detail.name,
               heading: HeadingLevel.TITLE,
             }),
             new Paragraph({
-              text: jsonData['Basic Info'].detail.title,
+              text: jsonData['Basic Information'].detail.title,
               heading: HeadingLevel.HEADING_1,
             }),
 
             this.createContactInfo(
-              jsonData['Basic Info'].detail.phone,
-              jsonData['Basic Info'].detail.linkedin,
-              jsonData['Basic Info'].detail.github,
-              jsonData['Basic Info'].detail.email
+              jsonData['Basic Information'].detail.phone,
+              jsonData['Basic Information'].detail.linkedin,
+              jsonData['Basic Information'].detail.github,
+              jsonData['Basic Information'].detail.email
             ),
 
             // Education Section
@@ -46,12 +47,7 @@ export class DocumentCreator {
             ]).flat(),
 
             // Work Experience Section
-            this.createHeading(jsonData['Work Experience'].sectionTitle),
-            ...jsonData['Work Experience'].details.map((job) => [
-              this.createInstitutionHeader(job.companyName, `${job.startDate} - ${job.endDate}`),
-              this.createRoleText(job.title),
-              ...job.points.map(point => this.createBullet(point))
-            ]).flat(),
+            this.handleWorkExpSection(jsonData['Work Experience']),
 
             // Achievements Section
             this.createHeading(jsonData['Achievements'].sectionTitle),
@@ -77,18 +73,60 @@ export class DocumentCreator {
       alignment: AlignmentType.CENTER,
       children: [
         new TextRun({
-          text: `Mobile: ${phoneNumber} | LinkedIn: ${profileUrl}`,
+          text: `Mobile: ${phoneNumber} | `,
           bold: true
         }),
         new TextRun({
-          text: `GitHub: ${githubUrl} | Email: ${email}`,
+          text: `LinkedIn: `,
+          bold: true
+        }),
+        new ExternalHyperlink({
+          children: [
+            new TextRun({
+              text: `${profileUrl}`,
+              style: "Hyperlink",
+            }),
+          ],
+          link: `${profileUrl}`,
+        }),
+        new TextRun({
+          text: `GitHub: `,
           bold: true,
           break: 1
+        }),
+        new ExternalHyperlink({
+          children: [
+            new TextRun({
+              text: `${githubUrl}`,
+              style: "Hyperlink",
+            }),
+          ],
+          link: `${githubUrl}`,
+        }),
+        new TextRun({
+          text: ` | `,
+          bold: true
+        }),
+        new TextRun({
+          text: `Email: ${email}`,
+          bold: true,
         }),
 
 
       ],
     });
+  }
+
+  handleWorkExpSection(workExp) {
+    if (workExp.details.length > 0) {
+
+      return this.createHeading(workExp.sectionTitle),
+        workExp.details.map((job) => [
+          this.createInstitutionHeader(job.companyName, `${job.startDate} - ${job.endDate}`),
+          this.createRoleText(job.title),
+          ...job.points.map(point => this.createBullet(point))
+        ]).flat()
+    }
   }
 
   createHeading(text) {

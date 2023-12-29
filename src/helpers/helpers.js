@@ -3,7 +3,7 @@ import axios from "axios";
 const colors = ["#0A79DF"];
 
 const sections = {
-  basicInfo: "Basic Info",
+  basicInfo: "Basic Information",
   workExp: "Work Experience",
   project: "Projects",
   education: "Education",

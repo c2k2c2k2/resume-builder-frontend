@@ -4,10 +4,8 @@ import { X } from "react-feather";
 import InputControl from "../InputControl/InputControl";
 
 import styles from "./Editor.module.css";
-import axios from "axios";
 import updateDB from "../../helpers/helpers";
 import toast from "react-hot-toast";
-import Joi from "joi";
 import {
   achievementSchema,
   basicInfoSchema,
@@ -17,6 +15,7 @@ import {
   summarySchema,
   workExperienceSchema,
 } from "../../helpers/validations";
+
 const Editor = (props) => {
   const sections = props.sections;
   const information = props.information;
@@ -42,7 +41,7 @@ const Editor = (props) => {
     phone: activeInformation?.detail?.phone || "",
     email: activeInformation?.detail?.email || "",
   });
-
+  
   const handlePointUpdate = (value, index) => {
     const tempValues = { ...values };
     if (!Array.isArray(tempValues.points)) tempValues.points = [];
@@ -55,6 +54,7 @@ const Editor = (props) => {
       <div className={styles.row}>
         <InputControl
           label="Title"
+          mandatory={false}
           placeholder="Enter title eg. Frontend developer"
           value={values.title}
           onChange={(event) =>
@@ -113,9 +113,7 @@ const Editor = (props) => {
       </div>
 
       <div className={styles.column}>
-        <label>
-          Enter work description <span className={styles.mandatory}>*</span>
-        </label>
+        <label>Enter work description</label>
         <InputControl
           placeholder="Line 1"
           value={values.points ? values.points[0] : ""}
@@ -140,6 +138,7 @@ const Editor = (props) => {
       <div className={styles.row}>
         <InputControl
           label="Title"
+          mandatory={true}
           value={values.title}
           placeholder="Enter title eg. Chat app"
           onChange={(event) =>
@@ -149,6 +148,7 @@ const Editor = (props) => {
       </div>
       <InputControl
         label="Overview"
+        mandatory={true}
         value={values.overview}
         placeholder="Enter basic overview of project"
         onChange={(event) =>
@@ -158,6 +158,7 @@ const Editor = (props) => {
       <div className={styles.row}>
         <InputControl
           label="Deployed Link"
+          mandatory={true}
           value={values.link}
           placeholder="Enter deployed link of project"
           onChange={(event) =>
@@ -166,6 +167,7 @@ const Editor = (props) => {
         />
         <InputControl
           label="Github Link"
+          mandatory={true}
           value={values.github}
           placeholder="Enter github link of project"
           onChange={(event) =>
@@ -205,6 +207,7 @@ const Editor = (props) => {
       <div className={styles.row}>
         <InputControl
           label="Title"
+          mandatory={true}
           value={values.title}
           placeholder="Enter title eg. B-tech"
           onChange={(event) =>
@@ -214,6 +217,7 @@ const Editor = (props) => {
       </div>
       <InputControl
         label="College/School Name"
+        mandatory={true}
         value={values.college}
         placeholder="Enter name of your college/school"
         onChange={(event) =>
@@ -223,6 +227,7 @@ const Editor = (props) => {
       <div className={styles.row}>
         <InputControl
           label="Start Date"
+          mandatory={true}
           type="date"
           placeholder="Enter start date of this education"
           value={values.startDate}
@@ -232,6 +237,7 @@ const Editor = (props) => {
         />
         <InputControl
           label="End Date"
+          mandatory={true}
           type="date"
           placeholder="Enter end date of this education"
           value={values.endDate}
@@ -247,6 +253,7 @@ const Editor = (props) => {
       <div className={styles.row}>
         <InputControl
           label="Name"
+          mandatory={true}
           placeholder="Enter your full name eg. Aashu"
           value={values.name}
           onChange={(event) =>
@@ -255,6 +262,7 @@ const Editor = (props) => {
         />
         <InputControl
           label="Title"
+          mandatory={true}
           value={values.title}
           placeholder="Enter your title eg. Frontend developer"
           onChange={(event) =>
@@ -265,6 +273,7 @@ const Editor = (props) => {
       <div className={styles.row}>
         <InputControl
           label="Linkedin Link"
+          mandatory={true}
           value={values.linkedin}
           placeholder="Enter your linkedin profile link"
           onChange={(event) =>
@@ -273,6 +282,7 @@ const Editor = (props) => {
         />
         <InputControl
           label="Github Link"
+          mandatory={true}
           value={values.github}
           placeholder="Enter your github profile link"
           onChange={(event) =>
@@ -283,6 +293,7 @@ const Editor = (props) => {
       <div className={styles.row}>
         <InputControl
           label="Email"
+          mandatory={true}
           value={values.email}
           placeholder="Enter your email"
           onChange={(event) =>
@@ -291,6 +302,7 @@ const Editor = (props) => {
         />
         <InputControl
           label="Enter phone"
+          mandatory={true}
           value={values.phone}
           placeholder="Enter your phone number"
           onChange={(event) =>
@@ -303,7 +315,9 @@ const Editor = (props) => {
   const achievementsBody = (
     <div className={styles.detail}>
       <div className={styles.column}>
-        <label>List your achievements <span className={styles.mandatory}>*</span></label>
+        <label>
+          List your achievements <span className={styles.mandatory}>*</span>
+        </label>
         <InputControl
           placeholder="Line 1"
           value={values.points ? values.points[0] : ""}
@@ -331,6 +345,7 @@ const Editor = (props) => {
     <div className={styles.detail}>
       <InputControl
         label="Summary"
+        mandatory={true}
         value={values.summary}
         placeholder="Enter your objective/summary"
         onChange={(event) =>
@@ -343,6 +358,7 @@ const Editor = (props) => {
     <div className={styles.detail}>
       <InputControl
         label="Other"
+        mandatory={true}
         value={values.other}
         placeholder="Enter something"
         onChange={(event) =>
@@ -493,15 +509,15 @@ const Editor = (props) => {
           points: values.points,
         };
 
-        const { error, value } = workExperienceSchema.validate(tempDetail);
-        if (error) {
-          toast.error(`${error.message}`);
-          console.log("error : ", error);
-          break;
-        }
+        // const { error, value } = workExperienceSchema.validate(tempDetail);
+        // if (error) {
+        //   toast.error(`${error.message}`);
+        //   console.log("error : ", error);
+        //   break;
+        // }
 
         const tempDetails = [...information[sections.workExp]?.details];
-        tempDetails[activeDetailIndex] = value;
+        tempDetails[activeDetailIndex] = tempDetail;
 
         props.setInformation((prev) => ({
           ...prev,
@@ -627,8 +643,8 @@ const Editor = (props) => {
         details: details,
       },
     }));
-
     setActiveDetailIndex((prev) => (prev === index ? 0 : prev - 1));
+    
   };
 
   useEffect(() => {
